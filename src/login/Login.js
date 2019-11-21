@@ -24,16 +24,18 @@ export default function Login(props) {
     try {
       let hash = await sha512(password); 
       let data = {email, password: hash}; 
-      console.log(data);
       let res = await axios.post("http://localhost:8080/login", data); 
       const token = res.data.token; 
       const name = res.data.name; 
-      localStorage.setItem("hitmanToken", token);
-      localStorage.setItem("hitmanName", name); 
-      props.onLogin();
-      
+      const type = res.data.type; 
+      const idHitman = res.data.idHitman; 
+
+      let hitmanInfo = {token, name, type, idHitman}; 
+      localStorage.setItem("hitmanInfo", JSON.stringify(hitmanInfo));
+      props.onLogin(true, type);
     } catch (err) {
       setErrorMsg(true)
+      props.onLogin(false);
     }
     
     

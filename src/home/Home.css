@@ -1,0 +1,40 @@
+.table-title {
+    float: left;
+    display: flex;
+    margin: 10px 0px 10px 0px; 
+}
+
+.table-btn {
+    margin-left: 10px; 
+}
+
+.OPEN {
+    color: blue; 
+    font-weight: bold; 
+}
+
+.SUCCESSFUL {
+    color: green; 
+    font-weight: bold; 
+}
+
+.FAILED {
+    color: red; 
+    font-weight: bold; 
+}
+
+.action:hover {
+    cursor: pointer;
+}
+
+.action {
+    margin-left: 5px; 
+    font-size: 20px !important; 
+}
+.fail {
+    color: red; 
+}
+
+.check {
+    color: green;
+}
