@@ -13,7 +13,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props); 
     let info = localStorage.getItem("hitmanInfo"); 
-    let hitmanInfo = (info != null) ? JSON.parse(info) : {}; 
+    let hitmanInfo = (info !== "null") ? JSON.parse(info) : {}; 
     let userType = hitmanInfo.type; 
     let isBoss = (userType === 'boss');
     let isHitman = (userType === 'hitman');
@@ -24,6 +24,8 @@ class Home extends React.Component {
       isHitman: isHitman, 
       isBigboss: isBigboss,
       assignments: [], 
+      givenAssignments: [],
+      myHitmans: [],
       hitmanInfo: hitmanInfo, 
       confirmAssignment: false, 
       confirmFailAssignment: false
@@ -49,10 +51,26 @@ class Home extends React.Component {
     const config = {
         headers: {'Authorization': "Bearer " + token}
     };
-    const url = "http://localhost:8080/getAssignments/"+idHitman;
+    const url = "http://localhost:8080/assignments/"+idHitman;
     return axios.get(url, config); 
   }
 
+  getGivenAssigments(token, idHitman) {
+    const config = {
+      headers: {'Authorization': "Bearer " + token}
+    };
+    const url = "http://localhost:8080/givenAssignments/"+idHitman;
+    return axios.get(url, config); 
+  }
+
+  getMyHitmans(token, idHitman) {
+    const config = {
+      headers: {'Authorization': "Bearer " + token}
+    };
+    const url = "http://localhost:8080/hitmans/"+idHitman;
+    return axios.get(url, config); 
+  }
+  
   //fecth and updates all the data 
   async fetchData() {
     let hitmanInfo = this.state.hitmanInfo; 
@@ -65,9 +83,20 @@ class Home extends React.Component {
         let res = await this.getAssignments(token, idHitman);
         assignments = res.data; 
       }
-        
+
+      let givenAssignments = [];
+      if (this.state.isBoss) {
+        let res = await this.getGivenAssigments(token, idHitman);
+        givenAssignments = res.data; 
+      }
       
-      this.setState({assignments})
+      let myHitmans = []
+      if (this.state.isBoss) {
+        let res = await this.getMyHitmans(token, idHitman);
+        myHitmans = res.data; 
+      }
+      
+      this.setState({assignments, givenAssignments, myHitmans})
     } catch (err) {
 
     }
@@ -80,8 +109,10 @@ class Home extends React.Component {
     let isBoss = (userType === 'boss');
     let isHitman = (userType === 'hitman');
     let isBigboss = (userType === 'bigboss');
-    
-    this.setState({logedIn: value, isHitman, isBoss, isBigboss});
+    let info = localStorage.getItem("hitmanInfo"); 
+    let hitmanInfo = (info !== "null") ? JSON.parse(info) : {}; 
+
+    this.setState({logedIn: value, isHitman, isBoss, isBigboss, hitmanInfo});
     if (value)
       this.fetchData(); 
   }
@@ -113,12 +144,12 @@ class Home extends React.Component {
 
   updateAssigmentStatus(status) {
     //update status
-    const url = "http://localhost:8080/updateAssignmentStatus";
+    const url = "http://localhost:8080/assignment/status";
     const config = {
         headers: {'Authorization': "Bearer " + this.state.hitmanInfo.token}
     };
 
-    axios.post(url, {idAssignment: this.state.confirmAssignmentId, status: status}, config).then(res => {
+    axios.put(url, {idAssignment: this.state.confirmAssignmentId, status: status}, config).then(res => {
       this.setState({ confirmAssignment: false });
       this.fetchData();
       toast.success("I will serve. I will be of service", {
@@ -128,6 +159,11 @@ class Home extends React.Component {
     
   } 
 
+  logout() {
+    localStorage.setItem("hitmanInfo", null);
+    this.setState({logedIn: false});
+  }
+
   render() {
     if (this.state.logedIn) {
       return (
@@ -135,9 +171,7 @@ class Home extends React.Component {
           <Navbar bg="dark" variant="dark">
           <Navbar.Brand href="#home">"I will serve. I will be of service."</Navbar.Brand>
           <Nav className="mr-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="#pricing">Pricing</Nav.Link>
+          <Nav.Link href="#home" onClick={() => this.logout()}>Log Out</Nav.Link>
           </Nav>
           </Navbar>
 
@@ -209,18 +243,25 @@ class Home extends React.Component {
               <tr>
                 <th>Hitman Name</th>
                 <th>Assignment Description</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th >Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
+            {
+              this.state.givenAssignments.map(assignment => {
+                return (
+                  <tr key={assignment.id}>
+                  <td>{assignment.name}</td>
+                  <td>{assignment.descripction}</td>
+                  <td className={assignment.status}>{assignment.status}</td>
+                </tr>
+                )
+              })
+            }
 
-              </tr>
+            {
+              (this.state.givenAssignments.length === 0) && <tr><td colSpan={"3"}><h3>No Assignments</h3></td></tr>
+            }
             </tbody>
           </Table>
 
@@ -235,12 +276,22 @@ class Home extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
+            {
+              this.state.myHitmans.map(hitman => {
+                return (
+                  <tr>
+                    <td>{hitman.name}</td>
+                    <td>{hitman.descripction}</td>
+                    <td>{hitman.status}</td>
+                    <td><i className="fa fa-dead action"></i> <i className="fa fa-dead action"></i>{hitman.hitmanId}</td>
+                  </tr>
+                );
+              })
+            }
+            
+            {
+              (this.state.myHitmans.length === 0) && <tr><td colSpan={"4  "}><h3>No Hitmans</h3></td></tr>
+            }
             </tbody>
           </Table>
 
