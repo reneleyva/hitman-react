@@ -1,0 +1,12 @@
+.form-assignment {
+    width: 50vw; 
+    margin: 20px auto; 
+}
+
+.form-assignment .form-label {
+    font-weight: bold; 
+}
+
+#submit {
+    float: right;
+}
