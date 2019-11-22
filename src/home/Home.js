@@ -54,7 +54,7 @@ class Home extends React.Component {
     const config = {
         headers: {'Authorization': "Bearer " + token}
     };
-    const url = "http://localhost:8080/assignments/"+idHitman;
+    const url = "https://hitmans-backend.herokuapp.com/assignments/"+idHitman;
     return axios.get(url, config); 
   }
 
@@ -62,7 +62,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "http://localhost:8080/givenAssignments/"+idHitman;
+    const url = "https://hitmans-backend.herokuapp.com/givenAssignments/"+idHitman;
     return axios.get(url, config); 
   }
 
@@ -70,7 +70,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "http://localhost:8080/hitmans/"+idHitman;
+    const url = "https://hitmans-backend.herokuapp.com/hitmans/"+idHitman;
     return axios.get(url, config); 
   }
   
@@ -78,7 +78,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "http://localhost:8080/hitmans/";
+    const url = "https://hitmans-backend.herokuapp.com/hitmans/";
     return axios.get(url, config); 
   }
 
@@ -86,7 +86,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "http://localhost:8080/bosses/";
+    const url = "https://hitmans-backend.herokuapp.com/bosses/";
     return axios.get(url, config); 
   }
 
@@ -94,7 +94,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "http://localhost:8080/assignments/";
+    const url = "https://hitmans-backend.herokuapp.com/assignments/";
     return axios.get(url, config); 
   }
 
@@ -158,7 +158,7 @@ class Home extends React.Component {
    * Checks if the current token is still valid 
    */
   checkToken() {
-    const url = "http://localhost:8080/checkToken";
+    const url = "https://hitmans-backend.herokuapp.com/checkToken";
     let hitmanInfo = this.state.hitmanInfo; 
 
     return new Promise((resolve, reject) => {
@@ -181,7 +181,7 @@ class Home extends React.Component {
 
   updateAssigmentStatus(status) {
     //update status
-    const url = "http://localhost:8080/assignment/status";
+    const url = "https://hitmans-backend.herokuapp.com/assignment/status";
     const config = {
         headers: {'Authorization': "Bearer " + this.state.hitmanInfo.token}
     };

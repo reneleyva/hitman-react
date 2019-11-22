@@ -19,7 +19,7 @@ export default class AddAsignment extends React.Component {
         const config = {
             headers: {'Authorization': "Bearer " + token}
         };
-        const url = "http://localhost:8080/hitmans/"+idHitman;
+        const url = "https://hitmans-backend.herokuapp.com/hitmans/"+idHitman;
         return axios.get(url, config); 
     }
 
@@ -27,7 +27,7 @@ export default class AddAsignment extends React.Component {
         const config = {
             headers: {'Authorization': "Bearer " + token}
         };
-        const url = "http://localhost:8080/hitmans/";
+        const url = "https://hitmans-backend.herokuapp.com/hitmans/";
         return axios.get(url, config); 
     }
 
@@ -76,7 +76,7 @@ export default class AddAsignment extends React.Component {
             const config = {
                 headers: {'Authorization': "Bearer " + hitmanInfo.token}
             };
-            const url = "http://localhost:8080/addAssignment/";
+            const url = "https://hitmans-backend.herokuapp.com/addAssignment/";
             axios.post(url, data, config).then(() => {
                 alert("Added");
                 window.location.href = "/"; 
