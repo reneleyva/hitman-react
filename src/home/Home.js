@@ -14,7 +14,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props); 
     let info = localStorage.getItem("hitmanInfo"); 
-    let hitmanInfo = (info !== "null" || !info) ? JSON.parse(info) : {}; 
+    let hitmanInfo = (info !== "null" && info !== null) ? JSON.parse(info) : {}; 
     let userType = hitmanInfo.type; 
     let isBoss = (userType === 'boss');
     let isHitman = (userType === 'hitman');
