@@ -54,7 +54,7 @@ class Home extends React.Component {
     const config = {
         headers: {'Authorization': "Bearer " + token}
     };
-    const url = "https://hitmans-backend.herokuapp.com/assignments/"+idHitman;
+    const url = "http://localhost:8080/assignments/"+idHitman;
     return axios.get(url, config); 
   }
 
@@ -62,7 +62,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "https://hitmans-backend.herokuapp.com/givenAssignments/"+idHitman;
+    const url = "http://localhost:8080/givenAssignments/"+idHitman;
     return axios.get(url, config); 
   }
 
@@ -70,7 +70,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "https://hitmans-backend.herokuapp.com/hitmans/"+idHitman;
+    const url = "http://localhost:8080/hitmans/"+idHitman;
     return axios.get(url, config); 
   }
   
@@ -78,7 +78,7 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "https://hitmans-backend.herokuapp.com/hitmans/";
+    const url = "http://localhost:8080/hitmans/";
     return axios.get(url, config); 
   }
 
@@ -86,7 +86,15 @@ class Home extends React.Component {
     const config = {
       headers: {'Authorization': "Bearer " + token}
     };
-    const url = "https://hitmans-backend.herokuapp.com/bosses/";
+    const url = "http://localhost:8080/bosses/";
+    return axios.get(url, config); 
+  }
+
+  getAllAssignments(token) {
+    const config = {
+      headers: {'Authorization': "Bearer " + token}
+    };
+    const url = "http://localhost:8080/assignments/";
     return axios.get(url, config); 
   }
 
@@ -119,8 +127,10 @@ class Home extends React.Component {
       if (this.state.isBigboss) {
         let resHit = await this.getAllHitmans(token);
         let resBoss = await this.getAllBosses(token);
+        let resAssignments = await this.getAllAssignments(token);
         allBosses = resBoss.data; 
         allHitmans = resHit.data; 
+        givenAssignments = resAssignments.data; 
       }
 
       this.setState({assignments, givenAssignments, myHitmans, allHitmans, allBosses})
@@ -148,7 +158,7 @@ class Home extends React.Component {
    * Checks if the current token is still valid 
    */
   checkToken() {
-    const url = "https://hitmans-backend.herokuapp.com/checkToken";
+    const url = "http://localhost:8080/checkToken";
     let hitmanInfo = this.state.hitmanInfo; 
 
     return new Promise((resolve, reject) => {
@@ -171,7 +181,7 @@ class Home extends React.Component {
 
   updateAssigmentStatus(status) {
     //update status
-    const url = "https://hitmans-backend.herokuapp.com/assignment/status";
+    const url = "http://localhost:8080/assignment/status";
     const config = {
         headers: {'Authorization': "Bearer " + this.state.hitmanInfo.token}
     };
@@ -347,7 +357,7 @@ class Home extends React.Component {
               {
                 this.state.allHitmans.map(hitman => {
                   return (
-                    <tr key={hitman.id}>
+                    <tr key={hitman.hitmanId}>
                       <td>{hitman.name}</td>
                       <td>{hitman.descripction}</td>
                       <td>{hitman.status}</td>

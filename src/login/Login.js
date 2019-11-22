@@ -24,7 +24,7 @@ export default function Login(props) {
     try {
       let hash = await sha512(password); 
       let data = {email, password: hash}; 
-      let res = await axios.post("https://hitmans-backend.herokuapp.com/login", data); 
+      let res = await axios.post("http://localhost:8080/login", data); 
       const token = res.data.token; 
       const name = res.data.name; 
       const type = res.data.type; 
