@@ -15,21 +15,36 @@ export default class AddAsignment extends React.Component {
         this.handleSelect = this.handleSelect.bind(this);
     }
 
-    getMyHitmans() {
-        let info = localStorage.getItem("hitmanInfo"); 
-        let hitmanInfo = (info !== "null") ? JSON.parse(info) : {}; 
+    getMyHitmans(token, idHitman) {
         const config = {
-            headers: {'Authorization': "Bearer " + hitmanInfo.token}
+            headers: {'Authorization': "Bearer " + token}
         };
-        const url = "https://hitmans-backend.herokuapp.com/hitmans/"+hitmanInfo.idHitman;
+        const url = "https://hitmans-backend.herokuapp.com/hitmans/"+idHitman;
+        return axios.get(url, config); 
+    }
+
+    getAllHitmans(token) {
+        const config = {
+            headers: {'Authorization': "Bearer " + token}
+        };
+        const url = "https://hitmans-backend.herokuapp.com/hitmans/";
         return axios.get(url, config); 
     }
 
     componentDidMount() {
-        this.getMyHitmans().then(res => {
-            let hitman = (res.data.length > 0) ? res.data[0].hitmanId : "";
-            this.setState({myHitmans: res.data, hitman})
-        }).catch(err => console.log(err) )
+        let info = localStorage.getItem("hitmanInfo"); 
+        let hitmanInfo = (info !== "null") ? JSON.parse(info) : {}; 
+        if (hitmanInfo.type === "boss") {
+            this.getMyHitmans(hitmanInfo.token, hitmanInfo.idHitman).then(res => {
+                let hitman = (res.data.length > 0) ? res.data[0].hitmanId : "";
+                this.setState({myHitmans: res.data, hitman})
+            }).catch(err => console.log(err) )
+        } else if (hitmanInfo.type === "bigboss") {
+            this.getAllHitmans(hitmanInfo.token).then(res => {
+                let hitman = (res.data.length > 0) ? res.data[0].hitmanId : "";
+                this.setState({myHitmans: res.data, hitman})
+            }).catch(err => console.log(err) )
+        }
     }
 
     handleSelect(evt) {
